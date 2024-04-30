@@ -3,59 +3,61 @@ package org.rpg.character;
 import lombok.Getter;
 import lombok.Setter;
 
+import static org.rpg.character.DamageRules.damageMultiplier;
+
 @Getter
 @Setter
-public class Character {
+public abstract class Character implements FightingInterface, HealingInterface {
 
-    private Double maxHealth;
-    private String name;
-    private Double health;
-    private Integer level;
-    private Integer range;
-    private Double attackDamage;
-    private Double heal;
-    private boolean isAlive;
+  private Double maxHealth;
+  private String name;
+  private Double health;
+  private Integer level;
+  private Integer maxRange;
+  private Double attackDamage;
+  private Double healPower;
+  private boolean isAlive;
 
-    private Character(String name) {
-        this.name = name;
-        this.health = 1000.0;
-        this.maxHealth = 1000.0;
-        this.level = 1;
-        this.attackDamage = 75.0;
-        this.heal = 50.0;
-        this.isAlive = true;
-    }
+  protected Character(String name,Integer range) {
+    this.name = name;
+    this.health = 1000.0;
+    this.maxHealth = 1000.0;
+    this.level = 1;
+    this.attackDamage = 75.0;
+    this.healPower = 50.0;
+    this.isAlive = true;
+    this.maxRange = range;
+  }
 
-    public static Character create(String name) {
-        return new Character(name);
-    }
 
-    public void dealDamage(Character enemy) {
+    @Override
+  public void dealDamage(Character enemy,Integer range) {
 
-    if (!this.equals(enemy)) {
-      if (enemy.isAlive && enemy.health > this.attackDamage) {
-        enemy.setHealth(enemy.getHealth() - damageCalc(enemy));
-      } else {
-        enemy.setAlive(false);
-        enemy.setHealth(0.0);
+    if (!this.equals(enemy) && isInRange(range)) {
+      if (enemy.isAlive) {
+            enemy.receiveDamage(this.attackDamage * damageMultiplier(this.level, enemy.getLevel()));
       }
-    } else System.out.println("You cannot deal damage to itself");
-    }
+    } else System.out.println("You cannot deal damage to yoursel");
+  }
 
-    public void heal(Character character) {
-        if (character.isAlive && this.equals(character)) {
-           if((character.health += this.heal) > maxHealth){
-               character.health = maxHealth;
-           }
-           else character.health += this.heal;
-    } else System.out.println("You cannot heal because character is dead");
-    }
 
-    public Double damageCalc(Character character){
-        if (this.level - character.getLevel() >= 5){
-            return this.attackDamage * 1.5;
-        }else if(this.level - character.getLevel() <= -5){
-            return this.attackDamage * 0.5;
-        }else return attackDamage;
-    }
+  @Override
+  public void heal() {
+    if (this.isAlive) {
+      if ((this.health + this.healPower) > maxHealth) {
+        this.health = maxHealth;
+      } else this.health += this.healPower;
+    } else System.out.println("You're dead");
+  }
+
+  public boolean isInRange(Integer range) {
+      return range >= 0 && range <= this.maxRange;
+  }
+
+  public void receiveDamage(Double damage) {
+      if (damage > this.health) {
+          this.health = 0.0;
+          this.isAlive = false;
+      }else this.health -= damage;
+  }
 }

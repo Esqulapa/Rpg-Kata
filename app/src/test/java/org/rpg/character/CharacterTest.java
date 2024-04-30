@@ -5,53 +5,78 @@ import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
 public class CharacterTest {
 
     @Test
     public void create() {
-        Character mordex = Character.create("Mordex");
-        assertNotNull(mordex);
-        assertEquals("Mordex", mordex.getName());
+
+        MeleeCharacter blabla = MeleeCharacter.createCharacter("blabla");
+
+        assertNotNull(blabla);
+        assertEquals("blabla", blabla.getName());
+        assertEquals(200, blabla.getMaxRange());
     }
+
     @Test
-    public void shouldCalculateDamage(){
+    public void shouldDealDamage(){
         //Basic attack is 75
-        Character mordex = Character.create("Mordex");
+        RangedCharacter mordex = RangedCharacter.createCharacter("Mordex");
         mordex.setLevel(6);
-        Character bortex = Character.create("Bortex");
+        RangedCharacter bortex = RangedCharacter.createCharacter("Bordex");
         bortex.setLevel(11);
-        Character tortex = Character.create("Tortex");
-        tortex.setLevel(2);
-        Character cortex = Character.create("Cortex");
-        cortex.setLevel(3);
+        RangedCharacter tortex = RangedCharacter.createCharacter("Tortex");
+        tortex.setLevel(13);
 
-        Double damageDealtToFiveOrLoverLevelCharacter = bortex.damageCalc(mordex);
-        Double damageDealtToFiveOrHigherLevelCharter = mordex.damageCalc(bortex);
-        Double damageDealtToSimilarLevelCharacter = tortex.damageCalc(tortex);
+        mordex.dealDamage(tortex,1000);
 
-        assertEquals(75,damageDealtToSimilarLevelCharacter);
+        tortex.dealDamage(bortex,1000);
 
-        assertEquals(75*1.5,damageDealtToFiveOrLoverLevelCharacter);
+        tortex.dealDamage(mordex,1000);
 
-        assertEquals(75*0.5,damageDealtToFiveOrHigherLevelCharter);
-
-
-
+        // 75 * 0.5 = 37.5
+        assertEquals(962.5, tortex.getHealth());
+        //75, 967.5 - 75
+        assertEquals(925, bortex.getHealth());
+        //75 * 1.5 = 112,5
+        assertEquals(887.5, mordex.getHealth());
     }
-    @Test
-    public void dealDamage() {
+//    @Test
+//    public void dealDamage() {
+//
+//        Character mordex = Character.create("Mordex");
+//        Character bortex = Character.create("Bortex");
+//
+//        bortex.dealDamage(mordex);
+//        assertEquals(925.0, mordex.getHealth().doubleValue());
+//
+//
+//      }
+//
+//      @Test
+//      public void heal() {
+//        //basic heal 50
+//
+//        Character mordex = Character.create("Mordex");
+//        mordex.setHealth(200.0);
+//
+//        mordex.heal();
+//
+//        assertEquals(250.0,mordex.getHealth());
+//
+//      }
+//
+//    @Test
+//    public void shouldReturnError() {
+//        //basic heal 50
+//
+//        Character mordex = Character.create("Mordex");
+//        Character cordex = Character.create("Cordex");
+//
+//        cordex.setHealth(200.0);
+//
+//        mordex.heal();
+//
+//}
 
-        Character mordex = Character.create("Mordex");
-        Character bortex = Character.create("Bortex");
 
-        bortex.dealDamage(mordex);
-        assertEquals(925.0, mordex.getHealth().doubleValue());
-
-
-      }
-
-      @Test
-      public void heal() {
-      }
 }

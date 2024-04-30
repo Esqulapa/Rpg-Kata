@@ -19,3 +19,13 @@ b
 gradlew,5\b\5bbfa66edb4db3c7c33c5181f43510990d3307f9
 f
 6app/src/test/java/org/rpg/character/CharacterTest.java,4\6\46f6441f1b5b79296f627814ab340fe6c831deeb
+j
+:app/src/main/java/org/rpg/character/FightingInterface.java,c\c\cc3576536593d72041eb5330df15ca2a77709260
+i
+9app/src/main/java/org/rpg/character/HealingInterface.java,3\3\3312117af1e425656f061fc1698a8c5425ebe846
+d
+4app/src/main/java/org/rpg/character/DamageRules.java,1\d\1de782c702b70dc7a90820a8c398d0bdd7c5511b
+h
+8app/src/main/java/org/rpg/character/RangedCharacter.java,f\b\fb3b297f5bb5ec45c78dc1fc74d8f7be5b35b522
+g
+7app/src/main/java/org/rpg/character/MeleeCharacter.java,c\2\c278c547955475ee0a6e8978af2cbaa1d7a929ea

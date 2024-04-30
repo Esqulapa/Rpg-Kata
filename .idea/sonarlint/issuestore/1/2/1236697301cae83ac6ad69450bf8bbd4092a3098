@@ -1,5 +1,3 @@
 
-q
-java:S1121/".Extract the assignment out of this expression.(Ç´„8ŠïÌò1J$866a1d1b-db5f-450c-8cbe-c0f547062a4e
-m	java:S106*"+Replace this use of System.out by a logger.(‘»ŠÇ8œŠïÌò1J$c793a7c2-7c04-42da-9062-fed42dd48809
-r	java:S1063"+Replace this use of System.out by a logger.(÷·´°şÿÿÿÿ8ŠïÌò1J$08341941-4731-45c7-bde8-81c68d744fe2
+r	java:S106("+Replace this use of System.out by a logger.(Šˆ®Üûÿÿÿÿ8–îáÑò1J$f67a07d8-51fa-4c49-bcd0-2715c34760d4
+m	java:S1062"+Replace this use of System.out by a logger.(äÜ¼›8—îáÑò1J$06e0ab76-da21-4b69-b68c-3250f8c4ce40
