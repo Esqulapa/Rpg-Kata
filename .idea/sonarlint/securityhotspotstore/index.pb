@@ -29,3 +29,11 @@ h
 8app/src/main/java/org/rpg/character/RangedCharacter.java,f\b\fb3b297f5bb5ec45c78dc1fc74d8f7be5b35b522
 g
 7app/src/main/java/org/rpg/character/MeleeCharacter.java,c\2\c278c547955475ee0a6e8978af2cbaa1d7a929ea
+a
+1app/src/main/java/org/rpg/fractions/Fraction.java,0\2\0251804042daddc0a476db93706006bf217ab10f
+j
+:app/src/main/java/org/rpg/fractions/FractionInterface.java,7\c\7cfc5b5996434a5c88b39a8198f40141bf532406
+e
+5app/src/main/java/org/rpg/fractions/BoarFraction.java,3\0\3007337f032ee8baff1ae8181ff1978ca205cfc6
+f
+6app/src/main/java/org/rpg/fractions/BisonFraction.java,3\1\3169aafe6558a70cc8698ee5739851d6bd8817e8

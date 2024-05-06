@@ -1,6 +1,11 @@
 package org.rpg.character;
 
 public interface FightingInterface {
-    public void dealDamage(Character enemy,Integer range);
+
+     boolean isInRange(Integer range);
+
+     void dealDamage(Character enemy,Integer range);
+
+     void receiveDamage(Character enemy);
 
 }
