@@ -4,14 +4,20 @@ import static org.rpg.character.DamageRules.damageMultiplier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.rpg.fractions.Fraction;
 import org.rpg.fractions.FractionInterface;
+import org.rpg.fractions.Fractions;
+import org.rpg.interfaces.FightingInterface;
+import org.rpg.interfaces.HealingInterface;
+import org.rpg.interfaces.Targetable;
 
 @Getter
 @Setter
-public class Character implements FightingInterface, HealingInterface, FractionInterface {
+public class Character
+    implements FightingInterface, HealingInterface, FractionInterface, Targetable {
 
   private Double maxHealth;
   private String name;
@@ -21,7 +27,9 @@ public class Character implements FightingInterface, HealingInterface, FractionI
   private Double attackDamage;
   private Double healPower;
   private boolean isAlive;
-  private List<Fraction> fractions;
+  private List<Fractions> fractions;
+
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
 
   protected Character(String name, Integer range) {
     this.name = name;
@@ -36,23 +44,47 @@ public class Character implements FightingInterface, HealingInterface, FractionI
   }
 
   @Override
-  public void dealDamage(Character enemy, Integer range) {
+  public void dealDamage(Targetable enemy, Integer range) {
     if (isInRange(range)) {
       if (!this.equals(enemy)) {
-        if (enemy.isAlive) {
-          enemy.receiveDamage2(this.attackDamage * damageMultiplier(this.level, enemy.getLevel()));
-        }
-      } else System.err.println("Cannot deal damage to yourself");
+        if (enemy.isAlive() && !checkIfIsAlly((Character) enemy)) {
+          dealDamageToCharacter(enemy);
+        } else enemy.receiveDamage(this.attackDamage);
+      } else logger.warning("Cannot deal damage to yourself");
+      System.err.println();
     } else System.err.println("Out of range");
   }
 
   @Override
-  public void heal() {
+  public void kill() {
+    this.health = 0.0;
+    this.isAlive = false;
+  }
+
+  private void dealDamageToCharacter(Targetable characterEnemy) {
+    characterEnemy.receiveDamage(
+        this.attackDamage * damageMultiplier(this.level, characterEnemy.getLevel()));
+  }
+
+  @Override
+  public void healYourself() {
     if (this.isAlive) {
-      if ((this.health + this.healPower) > maxHealth) {
-        this.health = maxHealth;
-      } else this.health += this.healPower;
-    } else System.out.println("You're dead");
+      receiveHeal(this.healPower);
+    } else System.err.println("Cannot heal you're dead");
+  }
+
+  @Override
+  public void healAlly(Character character) {
+    if (checkIfIsAlly(character)) {
+      character.receiveHeal(this.healPower);
+    } else System.err.println("Cannot heal enemy");
+  }
+
+  @Override
+  public void receiveHeal(Double heal) {
+    if (heal + this.health > maxHealth) {
+      this.health = maxHealth;
+    } else this.health += heal;
   }
 
   @Override
@@ -61,16 +93,13 @@ public class Character implements FightingInterface, HealingInterface, FractionI
   }
 
   @Override
-  public boolean checkIfIsEnemy(Character character) {
-    return character.getFractions().stream().anyMatch(fraction -> this.fractions.contains(fraction));
+  public boolean checkIfIsAlly(Character character) {
+    return character.getFractions().stream()
+        .anyMatch(fraction -> this.fractions.contains(fraction));
   }
 
   @Override
-  public void receiveDamage(Character enemy) {
-
-  }
-
-  public void receiveDamage2(Double damage) {
+  public void receiveDamage(Double damage) {
     if (damage > this.health) {
       this.health = 0.0;
       this.isAlive = false;
@@ -78,14 +107,14 @@ public class Character implements FightingInterface, HealingInterface, FractionI
   }
 
   @Override
-  public <T extends Fraction> void joinFraction(T fraction) {
+  public void joinFraction(Fractions fraction) {
     this.fractions.add(fraction);
   }
 
   @Override
-  public void abandonFraction(Fraction fraction) {
+  public void abandonFraction(Fractions fraction) {
     if (this.fractions.contains(fraction)) {
       this.fractions.remove(fraction);
-    }else System.err.println("there is no such fraction to abandon");
+    } else System.err.println("There is no such fraction to abandon");
   }
 }

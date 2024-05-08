@@ -1,12 +1,11 @@
 package org.rpg.fractions;
 
-import org.rpg.character.Character;
 
 public interface FractionInterface {
 
-  <T extends Fraction> void joinFraction(T fraction);
+  void joinFraction(Fractions fraction);
 
-  void abandonFraction(Fraction fraction);
+  void abandonFraction(Fractions fraction);
 
-  public boolean checkIfIsEnemy(Character character);
+
 }

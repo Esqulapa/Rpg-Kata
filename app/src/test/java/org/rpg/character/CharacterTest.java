@@ -1,7 +1,8 @@
 package org.rpg.character;
 
 import org.junit.Test;
-import org.rpg.fractions.BisonFraction;
+import org.rpg.fractions.Fractions;
+import org.rpg.things.Thing;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,6 +12,12 @@ public class CharacterTest {
   public void create() {
 
     MeleeCharacter blabla = MeleeCharacter.createCharacter("blabla");
+
+    RangedCharacter bababoey = RangedCharacter.createCharacter("bababoey");
+
+    assertNotNull(bababoey);
+    assertEquals("bababoey", bababoey.getName());
+    assertEquals(2000, bababoey.getMaxRange());
 
     assertNotNull(blabla);
     assertEquals("blabla", blabla.getName());
@@ -47,6 +54,16 @@ public class CharacterTest {
     RangedCharacter tortex = RangedCharacter.createCharacter("Tortex");
     MeleeCharacter mordex = MeleeCharacter.createCharacter("Mordex");
     mordex.dealDamage(tortex, 1000);
+
+    assertEquals(tortex.getHealth(), tortex.getMaxHealth());
+  }
+
+  @Test
+  public void shouldNotDealDamageToYourself() {
+
+    RangedCharacter tortex = RangedCharacter.createCharacter("Tortex");
+    tortex.dealDamage(tortex, 1000);
+    assertEquals(tortex.getHealth(), tortex.getMaxHealth());
   }
 
   @Test
@@ -60,7 +77,6 @@ public class CharacterTest {
 
     assertEquals(1000, bortex.getHealth());
 
-
     assertEquals(1000, mordex.getHealth());
   }
 
@@ -71,57 +87,109 @@ public class CharacterTest {
     MeleeCharacter bortex = MeleeCharacter.createCharacter("Bordex");
     bortex.dealDamage(mordex, 200);
 
-    assertFalse(mordex.isAlive());
     assertEquals(0.0, mordex.getHealth());
+    assertFalse(mordex.isAlive());
   }
 
   @Test
-  public void shouldHeal() {
+  public void shouldHealYourself() {
     // basic heal 50
 
     Character mordex = MeleeCharacter.createCharacter("Mordex");
     mordex.setHealth(200.0);
 
-    mordex.heal();
+    mordex.healYourself();
 
     assertEquals(250.0, mordex.getHealth());
   }
 
   @Test
-  public void shouldNotHealCharacter() {
+  public void shouldKillCharacter() {
+    MeleeCharacter steven = MeleeCharacter.createCharacter("steven");
+    steven.kill();
+
+    assertEquals(0.0, steven.getHealth());
+    assertFalse(steven.isAlive());
+  }
+
+  @Test
+  public void shouldNotHealYourselfCharacter() {
     // basic heal 50
 
     Character mordex = MeleeCharacter.createCharacter("Mordex");
 
-    mordex.setAlive(false);
+    mordex.kill();
+    mordex.healYourself();
 
-    mordex.heal();
+    assertEquals(0.0, mordex.getHealth());
   }
 
   @Test
-  public void checkIfIsEnemy() {
+  public void checkIfIsAlly() {
 
     MeleeCharacter mordex = MeleeCharacter.createCharacter("Mordex");
-    mordex.joinFraction(BisonFraction.createBisonFraction());
+    mordex.joinFraction(Fractions.BISONS);
 
     RangedCharacter bortex = RangedCharacter.createCharacter("Bordex");
-    bortex.joinFraction(BisonFraction.createBisonFraction());
+    bortex.joinFraction(Fractions.BISONS);
 
-    boolean ifIsEnemy = mordex.checkIfIsEnemy(bortex);
+    boolean ifIsAlly = mordex.checkIfIsAlly(bortex);
 
-    assertFalse(ifIsEnemy);
-
-
+    assertTrue(ifIsAlly);
   }
 
   @Test
   public void joinFraction() {
     Character mordex = MeleeCharacter.createCharacter("Mordex");
-    BisonFraction bisonFraction = BisonFraction.createBisonFraction();
-    mordex.joinFraction(bisonFraction);
+    mordex.joinFraction(Fractions.BISONS);
 
-    assertEquals(1,mordex.getFractions().size());
+    assertEquals(1, mordex.getFractions().size());
+  }
 
+  @Test
+  public void shouldAbandonFraction() {
+    Character mordex = MeleeCharacter.createCharacter("Mordex");
+    mordex.joinFraction(Fractions.BISONS);
+    mordex.abandonFraction(Fractions.BISONS);
+
+    assertEquals(0, mordex.getFractions().size());
+  }
+
+  @Test
+  public void healAlly() {
+    MeleeCharacter mordex = MeleeCharacter.createCharacter("Mordex");
+    mordex.joinFraction(Fractions.BISONS);
+
+    RangedCharacter bortex = RangedCharacter.createCharacter("Bordex");
+    bortex.joinFraction(Fractions.BISONS);
+    bortex.receiveDamage(100.0);
+
+    mordex.healAlly(bortex);
+    assertEquals(950.0, bortex.getHealth());
+  }
+
+  @Test
+  public void shouldNotHealEnemy() {
+    MeleeCharacter mordex = MeleeCharacter.createCharacter("Mordex");
+    mordex.joinFraction(Fractions.BISONS);
+
+    RangedCharacter bortex = RangedCharacter.createCharacter("Bordex");
+    bortex.joinFraction(Fractions.BOARS);
+    bortex.receiveDamage(100.0);
+
+    mordex.healAlly(bortex);
+    assertEquals(900.0, bortex.getHealth());
+  }
+
+  @Test
+  public void shouldHitThing() {
+    RangedCharacter bortex = RangedCharacter.createCharacter("Bordex");
+
+    Thing tree = Thing.createThing(2000.0, "tree", 10);
+
+    bortex.dealDamage(tree,2000);
+
+    assertEquals(1925.0,tree.getHealth());
 
   }
 }
